@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeatingReportMaker.ConsoleApp", "HeatingReportMaker.Console\HeatingReportMaker.ConsoleApp.csproj", "{2E2B80F6-252C-43F2-85D6-69CA7B3D052C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeatingReportMaker.Core", "HeatingReportMaker.Core\HeatingReportMaker.Core.csproj", "{2B712953-ECDA-444F-986E-A96EA31C4EDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E2B80F6-252C-43F2-85D6-69CA7B3D052C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E2B80F6-252C-43F2-85D6-69CA7B3D052C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E2B80F6-252C-43F2-85D6-69CA7B3D052C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E2B80F6-252C-43F2-85D6-69CA7B3D052C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B712953-ECDA-444F-986E-A96EA31C4EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B712953-ECDA-444F-986E-A96EA31C4EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B712953-ECDA-444F-986E-A96EA31C4EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B712953-ECDA-444F-986E-A96EA31C4EDC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2290DD7-B842-483F-AED6-8A2BD5BF7526}
+	EndGlobalSection
+EndGlobal
