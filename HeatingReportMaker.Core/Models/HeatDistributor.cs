@@ -9,7 +9,8 @@ namespace HeatingReportMaker.Core.Models
     public class HeatDistributor
     {
         public string DistributorNumber { get; set; } = "";
+        public decimal DistributorReadings { get; set; }
         public decimal RadiatorCoefficient { get; set; } // Коэффициент радиатора
-        public decimal RecalculatedReading { get; private set; } // Пересчитанные показания
+        public decimal RecalculatedReading { get; set; } // Пересчитанные показания
     }
 }

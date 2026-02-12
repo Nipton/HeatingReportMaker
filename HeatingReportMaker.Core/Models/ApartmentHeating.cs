@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace HeatingReportMaker.Core.Models
 {
-    public class ApartmentHeatingCalculation
+    public class ApartmentHeating
     {
         public int ApartmentNumber { get; set; } // Номер квартиры
+        public string Address { get; set; } = string.Empty; // Адресс дома
+        public string ReportPeriod { get; set; } = string.Empty; // Отчетный период
         public decimal ApartmentArea { get; set; } // Площадь квартиры
         public decimal LivingArea { get; set; } // Площадь жилых помещений
         public decimal BuildingHeatConsumption { get; set; } // Расход ТЭ на отопление по показаниям ОДПУ
@@ -26,10 +28,10 @@ namespace HeatingReportMaker.Core.Models
         public decimal HeatVolumeByDistributors { get; set; } // Объем тепла по распределителям
         public decimal HeatVolumePerUnit { get; set; } // Объем тепла на  1 условную единицу
         public decimal ApartmentCoefficient { get; set; } // Коэффициент квартирный
-        public decimal RecalculatedReading { get; private set; } // Пересчитанные показания
-        public decimal TotalIndividualConsumption { get; private set; } // Индивидуальное потребление
-        public decimal TotalIndividualCharge { get; private set; } // Плата за индивидуальное потребление
-        public decimal TotalCharge { get; private set; } // Итоговая сумма
+        public decimal RecalculatedReading { get; set; } // Пересчитанные показания
+        public decimal TotalIndividualConsumption { get; set; } // Индивидуальное потребление
+        public decimal TotalIndividualCharge { get; set; } // Плата за индивидуальное потребление
+        public decimal TotalCharge { get; set; } // Итоговая сумма
         public decimal TotalGcal { get; set; } // Всего Гкал
         public List<HeatDistributor> Distributors { get; set; } = new();
     }

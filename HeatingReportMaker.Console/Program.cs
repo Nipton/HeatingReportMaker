@@ -1,6 +1,4 @@
-﻿using ClosedXML;
-using ClosedXML.Excel;
-namespace HeatingReportMaker.ConsoleApp
+﻿namespace HeatingReportMaker.ConsoleApp
 {
     internal class Program
     {
@@ -14,9 +12,7 @@ namespace HeatingReportMaker.ConsoleApp
                 Console.WriteLine("Введено некорректное значение.");
                 Environment.Exit(0);
             }
-            using var wb = new XLWorkbook(filePath);
-            var ws = wb.Worksheet(1);
-            Console.WriteLine(ws.Cell("A1").Value);
+            Console.WriteLine();
         }
     }
 }
