@@ -14,8 +14,9 @@ namespace HeatingReportMaker.Core.Services
 {
     public class ExcelDataReader
     {
-        public ApartmentHeating? ReadApartmentData(string filePath, int apartmentNumber, bool round)
+        public ApartmentReadResult ReadApartmentData(string filePath, int apartmentNumber, bool round)
         {
+            ApartmentReadResult result = new ApartmentReadResult();
             using var wb = new XLWorkbook(filePath);
             var ws = wb.Worksheet(1);
             string address = ws.Cell("A1").GetString();
@@ -26,23 +27,33 @@ namespace HeatingReportMaker.Core.Services
                 return false;
             }).ToList();
             if (!rows.Any())
-                return null;
+            {
+                result.Message = "Указанная квартира не найдена.";
+                return result;
+            }
             var row = rows.First();
-            ApartmentHeating apartment = new ApartmentHeating();
-            apartment.ApartmentNumber = apartmentNumber;
-            apartment.Address = address;
-            apartment.ReportPeriod = row.Cell("AR").GetString();
-            apartment.ApartmentArea = GetCellValueDecimal(row, "B");
-            apartment.LivingArea = GetCellValueDecimal(row, "AA");
-            apartment.BuildingHeatConsumption = GetCellValueDecimal(row, "AT");
-            apartment.Tariff = GetCellValueDecimal(row, "AM");
-            apartment.CalculationByDistributors = GetCellValueDecimal(row, "AW");
-            apartment.CalculationByArea = GetCellValueDecimal(row, "AV");
-            apartment.TotalHouseConsumption = GetCellValueDecimal(row, "AU");
-            apartment.HeatVolumeByDistributors = GetCellValueDecimal(row, "BE");
-            apartment.ApartmentCoefficient = GetCellValueDecimal(row, "D");
-            apartment.TotalGcal = GetCellValueDecimal(row, "M");
-            apartment.RecalculatedReading = GetCellValueDecimal(row, "F");
+            if(string.Equals(row.Cell("E").GetString(), "площади"))
+            {
+                result.Message = "Отчет не будет сгенерирован, так как для этой квартиры расчет производится по площади, а не по показаниям.";
+                return result;
+            }
+            ApartmentHeating apartment = new ApartmentHeating()
+            {
+                ApartmentNumber = apartmentNumber,
+                Address = address,
+                ReportPeriod = row.Cell("AR").GetString(),
+                ApartmentArea = GetCellValueDecimal(row, "B"),
+                LivingArea = GetCellValueDecimal(row, "AA"),
+                BuildingHeatConsumption = GetCellValueDecimal(row, "AT"),
+                Tariff = GetCellValueDecimal(row, "AM"),
+                CalculationByDistributors = GetCellValueDecimal(row, "AW"),
+                CalculationByArea = GetCellValueDecimal(row, "AV"),
+                TotalHouseConsumption = GetCellValueDecimal(row, "AU"),
+                HeatVolumeByDistributors = GetCellValueDecimal(row, "BE"),
+                ApartmentCoefficient = GetCellValueDecimal(row, "D"),
+                TotalGcal = GetCellValueDecimal(row, "M"),
+                RecalculatedReading = GetCellValueDecimal(row, "F")
+            };
             try
             {
                 string[] allPercentages = row.Cell("AO").GetString().Split("/");
@@ -63,7 +74,9 @@ namespace HeatingReportMaker.Core.Services
                 apartment.Distributors.Add(hd);
             }
             CalculateTotals(apartment, round);
-            return apartment;
+            result.Success = true;
+            result.ApartmentHeating = apartment;           
+            return result;
         }
         private void CalculateTotals(ApartmentHeating apartment, bool round)
         {
@@ -71,10 +84,11 @@ namespace HeatingReportMaker.Core.Services
             apartment.IndividualHeatConsumption = apartment.BuildingHeatConsumption * apartment.IndividualPercentage;
             apartment.HeatPerSquareMeter = apartment.IndividualHeatConsumption / apartment.LivingArea;
             apartment.HeatVolumePerUnit = apartment.HeatVolumeByDistributors / apartment.TotalHouseConsumption;
-            apartment.TotalIndividualConsumption = apartment.RecalculatedReading * apartment.HeatVolumePerUnit;
+            decimal tempTotalIndividualConsumption = apartment.RecalculatedReading* apartment.HeatVolumePerUnit;
+            apartment.TotalIndividualConsumption = round ? Math.Round(tempTotalIndividualConsumption, 4) : tempTotalIndividualConsumption;
             apartment.TotalIndividualCharge = apartment.TotalIndividualConsumption * apartment.Tariff;
-            decimal tempValue = apartment.MopHeatConsumption / apartment.LivingArea * apartment.ApartmentArea;
-            apartment.ApartmentMopHeatShare = round ? Math.Round(tempValue, 4) : tempValue;
+            decimal tempMopHeatShare = apartment.MopHeatConsumption / apartment.LivingArea * apartment.ApartmentArea;
+            apartment.ApartmentMopHeatShare = round ? Math.Round(tempMopHeatShare, 4) : tempMopHeatShare;
             apartment.MopCharge = apartment.ApartmentMopHeatShare * apartment.Tariff;
             apartment.TotalCharge = apartment.TotalIndividualCharge + apartment.MopCharge;
 
@@ -83,7 +97,10 @@ namespace HeatingReportMaker.Core.Services
         {
             try
             {
-                return row.Cell(cellAddress).GetValue<decimal>();
+                var value = row.Cell(cellAddress);
+                if (string.Equals(value.GetString(), "-"))
+                    return 0m;
+                return value.GetValue<decimal>();
             }
             catch (Exception ex)
             {
