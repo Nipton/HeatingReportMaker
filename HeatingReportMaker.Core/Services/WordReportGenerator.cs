@@ -20,14 +20,14 @@ namespace HeatingReportMaker.Core.Services
             string outputPath = Path.Combine(desktopPath, $"Расчет стоимости отопления за {reportDate.ToLower()} г.docx");
             if (!File.Exists(templatePath))
             {
-                throw new TemplateNotFoundException("Шаблон для Word отчёта не был найден. Поместите шаблон ReportTemplate.docx в корень программы.");
+                throw new TemplateNotFoundException("Шаблон для Word отчёта не был найден. Поместите шаблон ReportTemplate.docx в папку Templates в корне программы.");
             }
             using var doc = DocX.Load(templatePath);
             doc.ReplaceTextSimple("{ReportPeriod}", reportDate.ToLower());
             doc.ReplaceTextSimple("{Address}", data.Address);
             doc.ReplaceTextSimple("{ApartmentNumber}", data.ApartmentNumber.ToString());
-            doc.ReplaceTextSimple("{IndividualPercentage}", (data.IndividualPercentage * 100).ToString());
-            doc.ReplaceTextSimple("{MopHeatPercentage}", (data.MopHeatPercentage * 100).ToString());
+            doc.ReplaceTextSimple("{IndividualPercentage}", (data.IndividualPercentage * 100).ToString("F2"));
+            doc.ReplaceTextSimple("{MopHeatPercentage}", (data.MopHeatPercentage * 100).ToString("F2"));
             doc.ReplaceTextSimple("{BuildingHeatConsumption}", Math.Round(data.BuildingHeatConsumption, 4).ToString());
             doc.ReplaceTextSimple("{LivingArea}", data.LivingArea.ToString());
             doc.ReplaceTextSimple("{CalculationByArea}", data.CalculationByArea.ToString());
