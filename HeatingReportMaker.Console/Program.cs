@@ -1,5 +1,7 @@
-﻿using HeatingReportMaker.Core.Services;
+﻿using DocumentFormat.OpenXml.Drawing;
 using HeatingReportMaker.Core.Exceptions;
+using HeatingReportMaker.Core.Models;
+using HeatingReportMaker.Core.Services;
 
 namespace HeatingReportMaker.ConsoleApp
 {
@@ -30,7 +32,7 @@ namespace HeatingReportMaker.ConsoleApp
                 Environment.Exit(0);
             }
             bool round = true;
-            
+
             string? stringRound = "";
             do
             {
@@ -41,18 +43,19 @@ namespace HeatingReportMaker.ConsoleApp
                     Console.WriteLine("Неверное значение. Повторите ввод.");
                     continue;
                 }
-                if(stringRound.ToLower() == "y")
+                if (stringRound.ToLower() == "y")
                     round = true;
-                if (stringRound.ToLower() == "n")
+                else if (stringRound.ToLower() == "n")
                     round = false;
                 else Console.WriteLine("Неверное значение. Повторите ввод.");
 
-            } while(stringRound == null || (stringRound.ToLower() != "y" && stringRound.ToLower() != "n"));
+            } while (stringRound == null || (stringRound.ToLower() != "y" && stringRound.ToLower() != "n"));
             Console.WriteLine("Формирование отчёта.");
+            ApartmentReadResult? res = null;
             try
             {
                 ExcelDataReader reader = new ExcelDataReader();
-                var res = reader.ReadApartmentData(filePath, numberApartment, round);
+                res = reader.ReadApartmentData(filePath, numberApartment, round);
                 if (!res.Success)
                 {
                     Console.WriteLine(res.Message);
@@ -71,6 +74,24 @@ namespace HeatingReportMaker.ConsoleApp
             catch (Exception ex)
             {
                 Console.WriteLine("Возникла непредвиденная ошибка при выполнении программы. Нажмите любую клавишу для выхода.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }          
+            try
+            {
+                WordReportGenerator wordGenerator = new WordReportGenerator();
+                wordGenerator.GenerateReport(res.ApartmentHeating!);
+            }
+            catch (TemplateNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Нажмите любую клавишу для выхода.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Отчёт в ворде не был сформирован. Возникла непредвиденная ошибка при выполнении программы. Нажмите любую клавишу для выхода.");
                 Console.ReadKey();
                 Environment.Exit(1);
             }

@@ -17,7 +17,7 @@ namespace HeatingReportMaker.Core.Services
             var ws = wb.Worksheets.Add();
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string reportDate = data.ReportPeriod.Split(' ').Take(2).Aggregate((a, b) => $"{a} {b}");
-            string filePath = Path.Combine(desktopPath, $"Расчёт отопления {data.Address} № {data.ApartmentNumber} {reportDate}.xlsx");
+            string filePath = Path.Combine(desktopPath, $"Расчёт отопления {data.Address} кв. {data.ApartmentNumber} {reportDate}.xlsx");
 
             ws.Range("A1:B1").Merge();
             ws.Range("A2:B2").Merge();
@@ -28,9 +28,6 @@ namespace HeatingReportMaker.Core.Services
             ws.Cell("A2").SetValue($"Отчетный период: {reportDate}").Style.Font.SetBold();
             ws.Cell("A3").SetValue($"Адрес дома: {data.Address}").Style.Font.SetBold();
             ws.Cell("A4").SetValue($"Квартира №{data.ApartmentNumber}").Style.Font.SetBold();  
-            //ws.Cell("B2").SetValue(reportDate).Style.Font.SetBold();
-            //ws.Cell("B3").SetValue(data.Address).Style.Font.SetBold();
-            //ws.Cell("B4").SetValue(data.ApartmentNumber).Style.Font.SetBold().Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
 
             ws.Cell("A6").SetValue("Площадь жилых помещений, кв.м").Style.Font.SetBold();
             ws.Cell("B6").SetValue(data.LivingArea).Style.Font.SetBold();

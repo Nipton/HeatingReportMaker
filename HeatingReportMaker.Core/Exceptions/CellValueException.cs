@@ -10,4 +10,8 @@ namespace HeatingReportMaker.Core.Exceptions
     {
         public CellValueException(string message) : base(message) { }
     }
+    public class TemplateNotFoundException : Exception
+    {
+        public TemplateNotFoundException(string message) : base(message) { }
+    }
 }

@@ -7,7 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\ReportTemplate.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Templates\ReportTemplate.docx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="DocX" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
