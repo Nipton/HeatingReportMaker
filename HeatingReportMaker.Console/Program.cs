@@ -78,7 +78,7 @@ namespace HeatingReportMaker.ConsoleApp
                 Console.ReadKey();
                 Environment.Exit(1);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Возникла непредвиденная ошибка при выполнении программы. Нажмите любую клавишу для выхода.");
                 Console.ReadKey();

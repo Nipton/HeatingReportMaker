@@ -13,6 +13,10 @@ namespace HeatingReportMaker.Core.Services
     {
         public void GenerateReport(ApartmentHeating data)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
             using var wb = new XLWorkbook();
             var ws = wb.Worksheets.Add();
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);

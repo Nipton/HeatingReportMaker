@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HeatingReportMaker.Wpf
 {
@@ -22,7 +23,8 @@ namespace HeatingReportMaker.Wpf
         private readonly ExcelReportGenerator _excelGenerator;
         private readonly WordReportGenerator _wordGenerator;
         private SolidColorBrush redBrush = new SolidColorBrush(Colors.Red);
-
+        private SolidColorBrush greenBrush = new SolidColorBrush(Colors.Green);
+        private SolidColorBrush orangeBrush = new SolidColorBrush(Colors.Orange);
         public MainWindow()
         {
             InitializeComponent();
@@ -45,7 +47,7 @@ namespace HeatingReportMaker.Wpf
             }
         }
 
-        private void GenerateButton_Click(object sender, RoutedEventArgs e)
+        private async void GenerateButton_Click(object sender, RoutedEventArgs e)
         {
             statusTextBlock.Text = string.Empty;
             statusTextBlock.Foreground = SystemColors.ControlTextBrush;
@@ -56,38 +58,46 @@ namespace HeatingReportMaker.Wpf
             {
                 statusTextBlock.Text = "Путь не указан!";
                 statusTextBlock.Foreground = redBrush;
+                return;
             }
             else if (!File.Exists(filePath))
             {
                 statusTextBlock.Text = "Файл не найден!";
                 statusTextBlock.Foreground = redBrush;
+                return;
             }
             else if (string.IsNullOrEmpty(stringNumberApartment))
             {
                 statusTextBlock.Text = "Номер квартиры не указан!";
                 statusTextBlock.Foreground = redBrush;
+                return;
             }
             else if (!int.TryParse(stringNumberApartment, out numberApartment))
             {
                 statusTextBlock.Text = "Некорректный номер квартиры.";
                 statusTextBlock.Foreground = redBrush;
+                return;
             }
+            statusTextBlock.Text = "Формирование отчёта.";
+            statusTextBlock.Foreground = orangeBrush;
             bool roundGkal = roundGkalCheckBox.IsChecked ?? true;
             bool wordReport = createWordReportCheckBox.IsChecked ?? false;
             ApartmentReadResult? result = null;
             try
             {
-                result = _reader.ReadApartmentData(filePath, numberApartment, roundGkal);
+                result = await Task.Run(() => _reader.ReadApartmentData(filePath, numberApartment, roundGkal));
                 if (!result.Success)
                 {
                     statusTextBlock.Text = result.Message;
                     statusTextBlock.Foreground = redBrush;
+                    return;
                 }
-                ExcelReportGenerator generator = new ExcelReportGenerator();
-                generator.GenerateReport(result.ApartmentHeating!);
+                await Task.Run(() => _excelGenerator.GenerateReport(result.ApartmentHeating!));
             }
             catch (IOException ex) when (ex.Message.Contains("занят") || ex.Message.Contains("used by another process"))
             {
+                statusTextBlock.Text = "Ошибка!";
+                statusTextBlock.Foreground = redBrush;
                 MessageBox.Show("Файл открыт в другой программе. Закройте его и повторите попытку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -103,30 +113,30 @@ namespace HeatingReportMaker.Wpf
             }
             catch (Exception)
             {
-                ShowFatalErrorAndExit();
+                MessageBox.Show("Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
             }
             if (wordReport)
             {
                 try
                 {
-                    _wordGenerator.GenerateReport(result!.ApartmentHeating!);
-
+                    await Task.Run(() => _wordGenerator.GenerateReport(result!.ApartmentHeating!));
                 }
                 catch (TemplateException ex)
                 {
+                    statusTextBlock.Text = "Ошибка!";
+                    statusTextBlock.Foreground = redBrush;
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
                 catch 
                 {
-                    ShowFatalErrorAndExit();
+                    MessageBox.Show("Отчёт в ворде не был сформирован. Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
                 }
             }
-        }
-        private void ShowFatalErrorAndExit()
-        {
-            MessageBox.Show("Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            Application.Current.Shutdown();
+            statusTextBlock.Text = "Готово. Файлы сохранены на рабочий стол.";
+            statusTextBlock.Foreground = greenBrush;
         }
     }
 }
