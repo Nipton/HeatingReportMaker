@@ -17,7 +17,7 @@ namespace HeatingReportMaker.Core.Services
             var ws = wb.Worksheets.Add();
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string reportDate = data.ReportPeriod.Split(' ').Take(2).Aggregate((a, b) => $"{a} {b}");
-            string filePath = Path.Combine(desktopPath, $"Расчёт стоимости отопления {data.Address} кв. {data.ApartmentNumber} {reportDate}.xlsx");
+            string filePath = Path.Combine(desktopPath, $"Расчет стоимости отопления {data.Address} кв. {data.ApartmentNumber} за {reportDate.ToLower()} г.xlsx");
 
             ws.Range("A1:B1").Merge();
             ws.Range("A2:B2").Merge();

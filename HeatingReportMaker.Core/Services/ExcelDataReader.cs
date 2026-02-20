@@ -91,7 +91,6 @@ namespace HeatingReportMaker.Core.Services
             apartment.ApartmentMopHeatShare = round ? Math.Round(tempMopHeatShare, 4) : tempMopHeatShare;
             apartment.MopCharge = apartment.ApartmentMopHeatShare * apartment.Tariff;
             apartment.TotalCharge = apartment.TotalIndividualCharge + apartment.MopCharge;
-
         }
         private decimal GetCellValueDecimal(IXLRow row, string cellAddress)
         {

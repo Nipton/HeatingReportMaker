@@ -64,6 +64,13 @@ namespace HeatingReportMaker.ConsoleApp
                 ExcelReportGenerator generator = new ExcelReportGenerator();
                 generator.GenerateReport(res.ApartmentHeating!);
             }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Нажмите любую клавишу для выхода.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
             catch (CellValueException ex)
             {
                 Console.WriteLine(ex.Message);
@@ -82,14 +89,14 @@ namespace HeatingReportMaker.ConsoleApp
                 WordReportGenerator wordGenerator = new WordReportGenerator();
                 wordGenerator.GenerateReport(res.ApartmentHeating!);
             }
-            catch (TemplateNotFoundException ex)
+            catch (TemplateException ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Нажмите любую клавишу для выхода.");
                 Console.ReadKey();
                 Environment.Exit(1);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Отчёт в ворде не был сформирован. Возникла непредвиденная ошибка при выполнении программы. Нажмите любую клавишу для выхода.");
                 Console.ReadKey();
