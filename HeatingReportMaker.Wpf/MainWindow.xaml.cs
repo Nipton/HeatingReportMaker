@@ -22,9 +22,9 @@ namespace HeatingReportMaker.Wpf
         private readonly ExcelDataReader _reader;
         private readonly ExcelReportGenerator _excelGenerator;
         private readonly WordReportGenerator _wordGenerator;
-        private SolidColorBrush redBrush = new SolidColorBrush(Colors.Red);
-        private SolidColorBrush greenBrush = new SolidColorBrush(Colors.Green);
-        private SolidColorBrush orangeBrush = new SolidColorBrush(Colors.Orange);
+        private readonly SolidColorBrush redBrush = new SolidColorBrush(Colors.Red);
+        private readonly SolidColorBrush greenBrush = new SolidColorBrush(Colors.Green);
+        private readonly SolidColorBrush orangeBrush = new SolidColorBrush(Colors.Orange);
         public MainWindow()
         {
             InitializeComponent();

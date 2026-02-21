@@ -7,10 +7,62 @@
         mc:Ignorable="d"
         Title="Heating Report Maker" SizeToContent="Height" Width="480" MinWidth="300" MinHeight="280" MaxHeight="350" MaxWidth="1200" Language="ru-RU" WindowStartupLocation="CenterScreen" Background="White">
     <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#4B0082"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#A93CD4"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#50026E"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="#4B0082"/>
+            <Setter Property="Background" Value="#E6E6FA"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#8B008B"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Border.BorderBrush" TargetName="border" Value="#8B008B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
     <Grid Margin="20 10 20 0">
@@ -29,7 +81,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Файл с данными:"/>
-            <TextBox x:Name="filePathTextBox" Grid.Column="1" Margin="10 0 10 0" VerticalAlignment="Center" BorderThickness="2" BorderBrush="Gray" FontSize="14"/>
+            <TextBox x:Name="filePathTextBox" Grid.Column="1" Margin="10 0 10 0" VerticalAlignment="Center"/>
             <Button Grid.Column="2" Content="Обзор..." Padding="5 2 5 2" VerticalAlignment="Center" Click="BrowseButton_Click"/>
         </Grid>
         <Grid Grid.Row="2" Margin="0 10 0 10">
@@ -38,7 +90,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Номер квартиры:"/>
-            <TextBox x:Name="apartmentNumberTextBox" Grid.Column="1" Width="36" Margin="7 0 0 0" HorizontalAlignment="Left" BorderThickness="2" BorderBrush="Gray" FontSize="14"/>
+            <TextBox x:Name="apartmentNumberTextBox" Grid.Column="1" Width="36" Margin="7 0 0 0" HorizontalAlignment="Left"/>
         </Grid>
         <StackPanel Grid.Row ="3">
             <TextBlock Text="Параметры:" Margin="0 0 0 5"/>
@@ -51,7 +103,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="statusTextBlock" Text="" FontSize="14" TextWrapping="Wrap" HorizontalAlignment="Right" />
-            <Button Grid.Column="1" Content="Сформировать и сохранить" Padding="5"  Margin="20 0 0 0" VerticalAlignment="Top" Click="GenerateButton_Click"/>
+            <Button Grid.Column="1" Content="Сформировать и сохранить" Width="160" Padding="5"  Margin="20 0 0 0" VerticalAlignment="Top" Click="GenerateButton_Click"/>
         </Grid>
     </Grid>
 </Window>

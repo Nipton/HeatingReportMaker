@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>house (1).ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="house (1).ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HeatingReportMaker.Core\HeatingReportMaker.Core.csproj" />
