@@ -49,94 +49,102 @@ namespace HeatingReportMaker.Wpf
 
         private async void GenerateButton_Click(object sender, RoutedEventArgs e)
         {
-            statusTextBlock.Text = string.Empty;
-            statusTextBlock.Foreground = SystemColors.ControlTextBrush;
-            string filePath = filePathTextBox.Text;
-            string stringNumberApartment = apartmentNumberTextBox.Text;
-            int numberApartment = 0;
-            if (string.IsNullOrEmpty(filePath))
-            {
-                statusTextBlock.Text = "Путь не указан!";
-                statusTextBlock.Foreground = redBrush;
-                return;
-            }
-            else if (!File.Exists(filePath))
-            {
-                statusTextBlock.Text = "Файл не найден!";
-                statusTextBlock.Foreground = redBrush;
-                return;
-            }
-            else if (string.IsNullOrEmpty(stringNumberApartment))
-            {
-                statusTextBlock.Text = "Номер квартиры не указан!";
-                statusTextBlock.Foreground = redBrush;
-                return;
-            }
-            else if (!int.TryParse(stringNumberApartment, out numberApartment))
-            {
-                statusTextBlock.Text = "Некорректный номер квартиры.";
-                statusTextBlock.Foreground = redBrush;
-                return;
-            }
-            statusTextBlock.Text = "Формирование отчёта.";
-            statusTextBlock.Foreground = orangeBrush;
-            bool roundGkal = roundGkalCheckBox.IsChecked ?? true;
-            bool wordReport = createWordReportCheckBox.IsChecked ?? false;
-            ApartmentReadResult? result = null;
+            generateButton.IsEnabled = false;
             try
             {
-                result = await Task.Run(() => _reader.ReadApartmentData(filePath, numberApartment, roundGkal));
-                if (!result.Success)
+                statusTextBlock.Text = string.Empty;
+                statusTextBlock.Foreground = SystemColors.ControlTextBrush;
+                string filePath = filePathTextBox.Text;
+                string stringNumberApartment = apartmentNumberTextBox.Text;
+                int numberApartment = 0;
+                if (string.IsNullOrEmpty(filePath))
                 {
-                    statusTextBlock.Text = result.Message;
+                    statusTextBlock.Text = "Путь не указан!";
                     statusTextBlock.Foreground = redBrush;
                     return;
                 }
-                await Task.Run(() => _excelGenerator.GenerateReport(result.ApartmentHeating!));
-            }
-            catch (IOException ex) when (ex.Message.Contains("занят") || ex.Message.Contains("used by another process"))
-            {
-                statusTextBlock.Text = "Ошибка!";
-                statusTextBlock.Foreground = redBrush;
-                MessageBox.Show("Файл открыт в другой программе. Закройте его и повторите попытку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            catch (CellValueException ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                MessageBox.Show("Ошибка доступа к файлу.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
-            if (wordReport)
-            {
+                else if (!File.Exists(filePath))
+                {
+                    statusTextBlock.Text = "Файл не найден!";
+                    statusTextBlock.Foreground = redBrush;
+                    return;
+                }
+                else if (string.IsNullOrEmpty(stringNumberApartment))
+                {
+                    statusTextBlock.Text = "Номер квартиры не указан!";
+                    statusTextBlock.Foreground = redBrush;
+                    return;
+                }
+                else if (!int.TryParse(stringNumberApartment, out numberApartment))
+                {
+                    statusTextBlock.Text = "Некорректный номер квартиры.";
+                    statusTextBlock.Foreground = redBrush;
+                    return;
+                }
+                statusTextBlock.Text = "Формирование отчёта.";
+                statusTextBlock.Foreground = orangeBrush;
+                bool roundGkal = roundGkalCheckBox.IsChecked ?? true;
+                bool wordReport = createWordReportCheckBox.IsChecked ?? false;
+                ApartmentReadResult? result = null;
                 try
                 {
-                    await Task.Run(() => _wordGenerator.GenerateReport(result!.ApartmentHeating!));
+                    result = await Task.Run(() => _reader.ReadApartmentData(filePath, numberApartment, roundGkal));
+                    if (!result.Success)
+                    {
+                        statusTextBlock.Text = result.Message;
+                        statusTextBlock.Foreground = redBrush;
+                        return;
+                    }
+                    await Task.Run(() => _excelGenerator.GenerateReport(result.ApartmentHeating!));
                 }
-                catch (TemplateException ex)
+                catch (IOException ex) when (ex.Message.Contains("занят") || ex.Message.Contains("used by another process"))
                 {
                     statusTextBlock.Text = "Ошибка!";
                     statusTextBlock.Foreground = redBrush;
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Файл открыт в другой программе. Закройте его и повторите попытку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
-                catch 
+                catch (CellValueException ex)
                 {
-                    MessageBox.Show("Отчёт в ворде не был сформирован. Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     Application.Current.Shutdown();
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show("Ошибка доступа к файлу.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
+                }
+                if (wordReport)
+                {
+                    try
+                    {
+                        await Task.Run(() => _wordGenerator.GenerateReport(result!.ApartmentHeating!));
+                    }
+                    catch (TemplateException ex)
+                    {
+                        statusTextBlock.Text = "Ошибка!";
+                        statusTextBlock.Foreground = redBrush;
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Отчёт в ворде не был сформирован. Возникла непредвиденная ошибка при выполнении программы.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Application.Current.Shutdown();
+                    }
+                }
+                statusTextBlock.Text = "Готово. Файлы сохранены на рабочий стол.";
+                statusTextBlock.Foreground = greenBrush;
             }
-            statusTextBlock.Text = "Готово. Файлы сохранены на рабочий стол.";
-            statusTextBlock.Foreground = greenBrush;
+            finally
+            {
+                generateButton.IsEnabled = true;
+            }
         }
     }
 }
