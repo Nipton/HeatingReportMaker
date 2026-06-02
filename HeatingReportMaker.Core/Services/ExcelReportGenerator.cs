@@ -28,7 +28,7 @@ namespace HeatingReportMaker.Core.Services
             ws.Range("A3:B3").Merge();
             ws.Range("A4:B4").Merge();
             ws.Cell("A1").Value = "Расчёт стоимости отопления";
-            ws.Cell("A1").Style.Font.SetBold().Font.SetFontSize(14).Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center).Alignment.SetVertical(XLAlignmentVerticalValues.Center).Fill.SetBackgroundColor(XLColor.LightGray);
+            ws.Cell("A1").Style.Font.SetBold().Font.SetFontSize(14).Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center).Alignment.SetVertical(XLAlignmentVerticalValues.Center);
             ws.Cell("A2").SetValue($"Отчетный период: {reportDate}").Style.Font.SetBold();
             ws.Cell("A3").SetValue($"Адрес дома: {data.Address}").Style.Font.SetBold();
             ws.Cell("A4").SetValue($"Квартира № {data.ApartmentNumber}").Style.Font.SetBold();  
@@ -37,33 +37,36 @@ namespace HeatingReportMaker.Core.Services
             ws.Cell("B6").SetValue(data.LivingArea).Style.Font.SetBold();
             ws.Cell("A7").SetValue("Площадь квартиры, кв.м").Style.Font.SetBold();
             ws.Cell("B7").SetValue(data.ApartmentArea).Style.Font.SetBold();
-            ws.Cell("A8").SetValue("Расход ТЭ на отопление по показаниям ОДПУ, Гкал").Style.Font.SetBold();
-            ws.Cell("B8").SetValue(data.BuildingHeatConsumption).Style.Font.SetBold();
-            ws.Cell("A9").SetValue("Тариф на отопление");
-            ws.Cell("B9").SetValue(data.Tariff);
-            ws.Cell("A10").SetValue("Расчет по распределителям, кв.м");
-            ws.Cell("B10").SetValue(data.CalculationByDistributors);
-            ws.Cell("A11").SetValue("Расчет по площади, кв.м");
-            ws.Cell("B11").SetValue(data.CalculationByArea);
-            ws.Cell("A12").SetValue($"Расход тепловой энергии на отопление на МОП {(data.MopHeatPercentage * 100):F2}%, Гкал");
-            ws.Cell("B12").SetValue(Math.Round(data.MopHeatConsumption, 3));
-            ws.Cell("A13").SetValue("Доля тепловой энергии на отопление МОП, приходящаяся на квартиру, Гкал");
-            ws.Cell("B13").SetValue(Math.Round(data.ApartmentMopHeatShare, 4));
-            ws.Cell("A14").SetValue("Плата за общедомовое тепло, руб.");
-            ws.Cell("B14").SetValue(Math.Round(data.MopCharge, 2));
-            ws.Cell("A15").SetValue($"Индивидуальное потребление {(data.IndividualPercentage * 100):F2}%, Гкал");
-            ws.Cell("B15").SetValue(Math.Round(data.IndividualHeatConsumption, 3));
-            ws.Cell("A16").SetValue("Расход тепловой энергии на 1 м² инд. отоление, Гкал/м²");
-            ws.Cell("B16").SetValue(Math.Round(data.HeatPerSquareMeter, 6));
-            ws.Cell("A17").SetValue("Сумма всех показаний (потребленных условных единиц) со всех теплораспределителей в доме, у.е.").Style.Font.SetBold();
-            ws.Cell("B17").SetValue(data.TotalHouseConsumption).Style.Font.SetBold();
-            ws.Cell("A18").SetValue("Объем тепла по распределителям, Гкал");
-            ws.Cell("B18").SetValue(Math.Round(data.HeatVolumeByDistributors, 3));
-            ws.Cell("A19").SetValue("Объем тепла на  1 условную единицу, Гкал/у.е.");
-            ws.Cell("B19").SetValue(Math.Round(data.HeatVolumePerUnit, 8));
-            ws.Cell("A20").SetValue("Коэффициент квартирный");
-            ws.Cell("B20").SetValue(data.ApartmentCoefficient);
-            var currentRow = ws.Row(21);
+            ws.Cell("A8").SetValue("Расход тепловой энергии  по показаниям ОДПУ, в т.ч.").Style.Font.SetBold();
+
+            ws.Cell("A9").SetValue("Расход тепловой энергии на отопление, Гкал").Style.Font.SetBold();
+            ws.Cell("B9").SetValue(data.BuildingHeatConsumption).Style.Font.SetBold();
+            ws.Cell("A10").SetValue("Тариф на отопление");
+            ws.Cell("B10").SetValue(data.Tariff);
+            ws.Cell("A11").SetValue("Расчет по распределителям, кв.м");
+            ws.Cell("B11").SetValue(data.CalculationByDistributors);
+            ws.Cell("A12").SetValue("Расчет по площади, кв.м");
+            ws.Cell("B12").SetValue(data.CalculationByArea);
+            ws.Cell("A13").SetValue($"Расход тепловой энергии на отопление на МОП {(data.MopHeatPercentage * 100):F2}%, Гкал");
+            ws.Cell("B13").SetValue(Math.Round(data.MopHeatConsumption, 3));
+            ws.Cell("A14").SetValue("Доля тепловой энергии на отопление МОП, приходящаяся на квартиру, Гкал");
+            ws.Cell("B14").SetValue(Math.Round(data.ApartmentMopHeatShare, 4));
+            ws.Cell("A15").SetValue("Плата за общедомовое тепло, руб.");
+            ws.Cell("B15").SetValue(Math.Round(data.MopCharge, 2));
+            ws.Cell("A16").SetValue($"Индивидуальное потребление {(data.IndividualPercentage * 100):F2}%, Гкал");
+            ws.Cell("B16").SetValue(Math.Round(data.IndividualHeatConsumption, 3));
+            ws.Cell("A17").SetValue("Расход тепловой энергии на 1 м² инд. отоление, Гкал/м²");
+            ws.Cell("B17").SetValue(Math.Round(data.HeatPerSquareMeter, 6));
+            ws.Cell("A18").SetValue("Сумма всех показаний (потребленных условных единиц) со всех теплораспределителей в доме, у.е.").Style.Font.SetBold();
+            ws.Cell("B18").SetValue(data.TotalHouseConsumption).Style.Font.SetBold();
+            ws.Cell("A19").SetValue("Объем тепла по распределителям, Гкал");
+            ws.Cell("B19").SetValue(Math.Round(data.HeatVolumeByDistributors, 3));
+            ws.Cell("A20").SetValue("Объем тепла на  1 условную единицу, Гкал/у.е.");
+            ws.Cell("B20").SetValue(Math.Round(data.HeatVolumePerUnit, 8));
+            ws.Cell("A21").SetValue("Коэффициент квартирный");
+            ws.Cell("B21").SetValue(data.ApartmentCoefficient);
+
+            var currentRow = ws.Row(22);
             foreach(var distributor in data.Distributors)
             {
                 currentRow.Cell(1).SetValue($"Показания распределителя №{distributor.DistributorNumber}").Style.Font.SetBold();
@@ -77,8 +80,8 @@ namespace HeatingReportMaker.Core.Services
                 currentRow.Cell(2).SetValue(distributor.RecalculatedReading);
                 currentRow = currentRow.RowBelow();
             }
-            currentRow.Cell(1).SetValue("Сумма пересчит. показаний кв., ед");
-            currentRow.Cell(2).SetValue(Math.Round(data.RecalculatedReading, 4));
+            currentRow.Cell(1).SetValue("Сумма пересчит. показаний кв., ед").Style.Font.SetBold();
+            currentRow.Cell(2).SetValue(Math.Round(data.RecalculatedReading, 4)).Style.Font.SetBold();
             currentRow = currentRow.RowBelow();
             currentRow.Cell(1).SetValue("Индивидуальное потребление, Гкал");
             currentRow.Cell(2).SetValue(Math.Round(data.TotalIndividualConsumption, 4));
@@ -98,8 +101,9 @@ namespace HeatingReportMaker.Core.Services
             ws.Range("A6", $"B{currentRow.RowNumber()}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
             ws.Range("A6", $"B{currentRow.RowNumber()}").Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
             ws.Range("A8:B8").Style.Fill.BackgroundColor = XLColor.FromArgb(197, 224, 178);
-            ws.Range("A13:B13").Style.Fill.BackgroundColor = XLColor.FromArgb(226, 239, 217);
-            ws.Range("A14:B14").Style.Fill.BackgroundColor = XLColor.FromArgb(255, 255, 153);
+            ws.Range("A9:B9").Style.Fill.BackgroundColor = XLColor.FromArgb(197, 224, 178);
+            ws.Range("A14:B14").Style.Fill.BackgroundColor = XLColor.FromArgb(226, 239, 217);
+            ws.Range("A15:B15").Style.Fill.BackgroundColor = XLColor.FromArgb(255, 255, 153);
             ws.Column("A").Width = 60;
             ws.Column("A").Style.Alignment.WrapText = true;            
             ws.Column("B").Width = 15;
